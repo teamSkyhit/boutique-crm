@@ -1,0 +1,75 @@
+const nextConfig = {
+  output: "standalone",
+  images: {
+    unoptimized: true,
+  },
+  experimental: {
+    // Remove if not using Server Components
+    serverComponentsExternalPackages: ["mongodb"],
+  },
+  webpack(config, { dev }) {
+    if (dev) {
+      // Reduce CPU/memory from file watching
+      config.watchOptions = {
+        poll: 2000, // check every 2 seconds
+        aggregateTimeout: 300, // wait before rebuilding
+        ignored: ["**/node_modules"],
+      };
+    }
+    return config;
+  },
+  onDemandEntries: {
+    maxInactiveAge: 10000,
+    pagesBufferLength: 2,
+  },
+  async headers() {
+    const isDevelopment = process.env.NODE_ENV === "development";
+
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          // Security Headers
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-XSS-Protection", value: "1; mode=block" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Content-Security-Policy",
+            value:
+              "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://*.r2.cloudflarestorage.com; img-src 'self' data: blob: https://*.r2.cloudflarestorage.com https://*.cloudflare.com",
+          },
+          // CORS Headers (only for development or if explicitly configured)
+          ...(isDevelopment || process.env.CORS_ORIGINS
+            ? [
+                {
+                  key: "Access-Control-Allow-Origin",
+                  value: process.env.CORS_ORIGINS || "*",
+                },
+                {
+                  key: "Access-Control-Allow-Methods",
+                  value: "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+                },
+                {
+                  key: "Access-Control-Allow-Headers",
+                  value: "Content-Type, Authorization",
+                },
+                { key: "Access-Control-Allow-Credentials", value: "true" },
+              ]
+            : []),
+        ],
+      },
+    ];
+  },
+  async rewrites() {
+    const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8001';
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${backendUrl}/api/:path*`,
+      },
+    ];
+  },
+};
+
+module.exports = nextConfig;
