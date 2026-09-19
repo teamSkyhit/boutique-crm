@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -55,7 +55,7 @@ export default function ReturnsPage() {
       if (filterStartDate) params.startDate = filterStartDate
       if (filterEndDate) params.endDate = filterEndDate
       const response = await returnsAPI.getAll(user.token, params)
-      if (!response.success) throw new Error(response.message || 'Failed to fetch returns')
+      if (!response.success) throw new Error(response.error || response.message || 'Failed to fetch returns')
       return response.data || []
     },
     enabled: !!user?.token && dateRangeValid,
@@ -90,7 +90,7 @@ export default function ReturnsPage() {
           toast.warning('Return period expired. Returns are only allowed within 7 days of purchase.')
         }
       } else {
-        toast.error(response.message || 'Sale not found')
+        toast.error(response.error || response.message || 'Sale not found')
         setSaleData(null)
       }
     } catch (error) {
@@ -188,7 +188,7 @@ export default function ReturnsPage() {
         if (response.success) {
           results.push(response.data)
         } else {
-          throw new Error(response.message || 'Failed to process return')
+          throw new Error(response.error || response.message || 'Failed to process return')
         }
       }
 

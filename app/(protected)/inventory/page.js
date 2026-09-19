@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -144,7 +144,7 @@ export default function InventoryPage() {
     queryKey: ['products', productsParams],
     queryFn: async () => {
       const response = await productsAPI.getAll(user.token, productsParams);
-      if (!response.success) throw new Error(response.message || 'Failed to load products');
+      if (!response.success) throw new Error(response.error || response.message || 'Failed to load products');
       return response;
     },
     enabled: !!user?.token,
@@ -156,7 +156,7 @@ export default function InventoryPage() {
     queryKey: ['shelves'],
     queryFn: async () => {
       const response = await shelvesAPI.getAll(user.token);
-      if (!response.success) throw new Error(response.message || 'Failed to load shelves');
+      if (!response.success) throw new Error(response.error || response.message || 'Failed to load shelves');
       return response.data || [];
     },
     enabled: !!user?.token,
@@ -166,7 +166,7 @@ export default function InventoryPage() {
     queryKey: ['store-inventory', storeFilter],
     queryFn: async () => {
       const response = await storeInventoryAPI.getStoreInventory(storeFilter, user.token);
-      if (!response.success) throw new Error(response.message || 'Failed to load store inventory');
+      if (!response.success) throw new Error(response.error || response.message || 'Failed to load store inventory');
       return response.data || [];
     },
     enabled: !!user?.token && storeFilter !== 'all',
@@ -306,7 +306,7 @@ export default function InventoryPage() {
           qc.invalidateQueries({ queryKey: ['products'] });
         }
       } else {
-        toast.error(response.message || 'Failed to delete product');
+        toast.error(response.error || response.message || 'Failed to delete product');
       }
     } catch (error) {
       logger.error('Error deleting product:', error);
@@ -343,7 +343,7 @@ export default function InventoryPage() {
           qc.invalidateQueries({ queryKey: ['products'] });
         }
       } else {
-        toast.error(response.message || 'Failed to delete variant');
+        toast.error(response.error || response.message || 'Failed to delete variant');
       }
     } catch (error) {
       logger.error('Error deleting variant:', error);
@@ -972,7 +972,7 @@ export default function InventoryPage() {
           qc.invalidateQueries({ queryKey: ['products'] });
         } else {
           logger.error('Variant update failed:', response.message);
-          toast.error(response.message || 'Failed to update variant');
+          toast.error(response.error || response.message || 'Failed to update variant');
         }
         return;
       }
@@ -1041,7 +1041,7 @@ export default function InventoryPage() {
         qc.invalidateQueries({ queryKey: ['products'] });
       } else {
         logger.error('Product update failed:', response.message);
-        toast.error(response.message || 'Failed to update product');
+        toast.error(response.error || response.message || 'Failed to update product');
       }
     } catch (error) {
       logger.error('Error updating product:', error);
@@ -2196,7 +2196,7 @@ export default function InventoryPage() {
                                         setEditingVariants(editingVariants.filter(v => v.id !== variant.id));
                                         qc.invalidateQueries({ queryKey: ['products'] });
                                       } else {
-                                        toast.error(response.message || 'Failed to remove variant');
+                                        toast.error(response.error || response.message || 'Failed to remove variant');
                                       }
                                     } catch (error) {
                                       logger.error('Error removing variant:', error);
@@ -2282,7 +2282,7 @@ export default function InventoryPage() {
                 }
                 qc.invalidateQueries({ queryKey: ['products'] });
               } else {
-                toast.error(response.message || 'Failed to save variant');
+                toast.error(response.error || response.message || 'Failed to save variant');
               }
             } catch (error) {
               logger.error('Error saving variant:', error);

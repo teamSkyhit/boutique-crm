@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -70,15 +70,15 @@ export default function EnquiriesPage() {
       const params = { page, limit: 20 };
       if (statusFilter !== 'all') params.status = statusFilter;
       const response = await enquiriesAPI.getAll(user.token, params);
-      if (!response.success) throw new Error(response.message || 'Failed to load enquiries');
+      if (!response.success) throw new Error(response.error || response.message || 'Failed to load enquiries');
       return response.data;
     },
     enabled: !!user?.token,
   });
 
   const enquiries = enquiriesData?.enquiries || [];
-  const totalPages = enquiriesData?.pagination?.pages || 1;
-  const total = enquiriesData?.pagination?.total || 0;
+  const totalPages = enquiriesData?.meta?.pages || 1;
+  const total = enquiriesData?.meta?.total || 0;
 
   const openDetail = (enquiry) => {
     setSelectedEnquiry(enquiry);
@@ -101,7 +101,7 @@ export default function EnquiriesPage() {
         setIsDetailOpen(false);
         qc.invalidateQueries({ queryKey: ['enquiries'] });
       } else {
-        toast.error(response.message || 'Failed to update enquiry');
+        toast.error(response.error || response.message || 'Failed to update enquiry');
       }
     } catch (err) {
       logger.error('Error updating enquiry:', err);

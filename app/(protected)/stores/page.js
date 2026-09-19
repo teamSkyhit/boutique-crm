@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -160,7 +160,7 @@ export default function StoresPage() {
         toast.success('Store deleted successfully');
         qc.invalidateQueries({ queryKey: ['stores'] });
       } else {
-        toast.error(response.message || 'Failed to delete store');
+        toast.error(response.error || response.message || 'Failed to delete store');
       }
     } catch (error) {
       console.error('Error deleting store:', error);

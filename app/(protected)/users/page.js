@@ -137,7 +137,7 @@ export default function UsersPage() {
           setIsDialogOpen(false)
           qc.invalidateQueries({ queryKey: ['users'] })
         } else {
-          toast.error(response.message || response.error || 'Failed to update user')
+          toast.error(response.error || response.message || 'Failed to update user')
         }
       } else {
         const response = await usersAPI.create(validatedData, user.token)
@@ -146,7 +146,7 @@ export default function UsersPage() {
           setIsDialogOpen(false)
           qc.invalidateQueries({ queryKey: ['users'] })
         } else {
-          toast.error(response.message || response.error || 'Failed to create user')
+          toast.error(response.error || response.message || 'Failed to create user')
         }
       }
     } catch (error) {
@@ -164,7 +164,7 @@ export default function UsersPage() {
         toast.success('User deleted successfully')
         fetchUsers()
       } else {
-        toast.error(response.message || 'Failed to delete user')
+        toast.error(response.error || response.message || 'Failed to delete user')
       }
     } catch (error) {
       toast.error('Failed to delete user')
@@ -266,8 +266,8 @@ export default function UsersPage() {
                       </TableCell>
                       <TableCell className="text-sm">{getStoreName(usr)}</TableCell>
                       <TableCell>
-                        <Badge variant={usr.pin ? 'outline' : 'secondary'} className="text-xs">
-                          {usr.pin ? 'Set' : 'Not set'}
+                        <Badge variant={usr.hasPin ? 'outline' : 'secondary'} className="text-xs">
+                          {usr.hasPin ? 'PIN set' : 'No PIN'}
                         </Badge>
                       </TableCell>
                       <TableCell>

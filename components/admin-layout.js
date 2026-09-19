@@ -22,7 +22,6 @@ import {
   Building2,
   ShoppingCart,
   ArrowLeftRight,
-  Clock,
   Printer,
   MessageSquare,
 } from 'lucide-react';
@@ -47,7 +46,6 @@ const NAV_ITEMS = [
   { name: 'Stores', href: '/stores', icon: Building2 },
   { name: 'Counters', href: '/counters', icon: ShoppingCart },
   { name: 'Stock Transfers', href: '/stock-transfers', icon: ArrowLeftRight },
-  { name: 'Shifts', href: '/shifts', icon: Clock },
   { name: 'Reports', href: '/reports', icon: FileSpreadsheet },
   { name: 'Returns', href: '/returns', icon: ArrowLeftRight },
   { name: 'Print Barcodes', href: '/print-barcodes', icon: Printer },

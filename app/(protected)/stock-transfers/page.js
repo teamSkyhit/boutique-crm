@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -79,7 +79,7 @@ export default function StockTransfersPage() {
       if (statusFilter !== 'all') params.status = statusFilter;
       if (storeFilter !== 'all') params.storeId = storeFilter;
       const response = await stockTransfersAPI.getAll(user.token, params);
-      if (!response.success) throw new Error(response.message || 'Failed to fetch stock transfers');
+      if (!response.success) throw new Error(response.error || response.message || 'Failed to fetch stock transfers');
       return response.data || [];
     },
     enabled: !!user?.token,
@@ -182,7 +182,7 @@ export default function StockTransfersPage() {
         handleCloseModal();
         qc.invalidateQueries({ queryKey: ['transfers'] });
       } else {
-        toast.error(response.message || 'Failed to request stock transfer');
+        toast.error(response.error || response.message || 'Failed to request stock transfer');
       }
     } catch (error) {
       console.error('Error requesting stock transfer:', error);

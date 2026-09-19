@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useCallback, useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -57,7 +57,7 @@ export default function ShelvesPage() {
     queryKey: ['shelves'],
     queryFn: async () => {
       const response = await shelvesAPI.getAll(user.token)
-      if (!response.success) throw new Error(response.message || 'Failed to fetch shelves')
+      if (!response.success) throw new Error(response.error || response.message || 'Failed to fetch shelves')
       return response.data || []
     },
     enabled: !!user?.token,

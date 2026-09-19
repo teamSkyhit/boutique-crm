@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -128,7 +128,7 @@ export default function AddProductPage() {
     queryKey: ['shelves'],
     queryFn: async () => {
       const response = await shelvesAPI.getAll(user.token);
-      if (!response.success) throw new Error(response.message || 'Failed to load shelf locations');
+      if (!response.success) throw new Error(response.error || response.error || response.message || 'Failed to load shelf locations');
       return response.data || [];
     },
     enabled: !!user?.token,
@@ -270,7 +270,7 @@ export default function AddProductPage() {
         return;
       }
       logger.error('Product creation failed:', response.message);
-      toast.error(response.message || 'Failed to add product');
+      toast.error(response.error || response.error || response.message || 'Failed to add product');
     }
   };
 
@@ -551,7 +551,7 @@ export default function AddProductPage() {
           logger.warn('Session expired during product creation');
           return;
         }
-        toast.error(response.message || 'Failed to create product with variants');
+        toast.error(response.error || response.error || response.message || 'Failed to create product with variants');
         logger.error('Product creation failed:', response.message);
       }
     } catch (error) {

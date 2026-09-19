@@ -72,15 +72,15 @@ function ReceiptsContent() {
     queryKey: queryKeys.sales(salesParams),
     queryFn: async () => {
       const response = await salesAPI.getAll(user.token, salesParams);
-      if (!response.success) throw new Error(response.message || 'Failed to load receipts');
+      if (!response.success) throw new Error(response.error || response.message || 'Failed to load receipts');
       return response.data;
     },
     enabled: !!user?.token,
   });
 
   const salesList = salesResponse?.sales || salesResponse || [];
-  const totalPages = salesResponse?.totalPages || 1;
-  const totalReceipts = salesResponse?.total || 0;
+  const totalPages = salesResponse?.meta?.totalPages || salesResponse?.totalPages || 1;
+  const totalReceipts = salesResponse?.meta?.total || salesResponse?.total || 0;
 
   // Group sales by receipt number
   const receipts = useMemo(() => {
@@ -140,7 +140,7 @@ function ReceiptsContent() {
         setReceiptData(response.data);
         return response.data;
       } else {
-        toast.error(response.message || 'Failed to load receipt');
+        toast.error(response.error || response.message || 'Failed to load receipt');
         return null;
       }
     } catch (error) {

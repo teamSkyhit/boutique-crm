@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import ProtectedRoute from '@/components/protected-route';
@@ -170,7 +170,7 @@ export default function CategoriesPage() {
         refreshCategories();
       } else {
         logger.error('Category save failed:', response.message);
-        toast.error(response.message || 'Failed to save category');
+        toast.error(response.error || response.message || 'Failed to save category');
       }
     } catch (error) {
       logger.error('Error saving category:', error);
@@ -188,7 +188,7 @@ export default function CategoriesPage() {
         setDeleteCategoryId(null);
         refreshCategories();
       } else {
-        toast.error(response.message || 'Failed to delete category');
+        toast.error(response.error || response.message || 'Failed to delete category');
         setDeleteCategoryId(null);
       }
     } catch (error) {
@@ -266,7 +266,7 @@ export default function CategoriesPage() {
         refreshCategories();
       } else {
         logger.error('Subcategory save failed:', response.message);
-        toast.error(response.message || 'Failed to save subcategory');
+        toast.error(response.error || response.message || 'Failed to save subcategory');
       }
     } catch (error) {
       logger.error('Error saving subcategory:', error);
@@ -287,7 +287,7 @@ export default function CategoriesPage() {
         setDeleteSubcategoryId(null);
         refreshCategories();
       } else {
-        toast.error(response.message || 'Failed to delete subcategory');
+        toast.error(response.error || response.message || 'Failed to delete subcategory');
         setDeleteSubcategoryId(null);
       }
     } catch (error) {

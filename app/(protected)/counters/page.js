@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -115,7 +115,7 @@ export default function CountersPage() {
         toast.success('Counter deleted successfully');
         qc.invalidateQueries({ queryKey: ['counters'] });
       } else {
-        toast.error(response.message || 'Failed to delete counter');
+        toast.error(response.error || response.message || 'Failed to delete counter');
       }
     } catch (error) {
       console.error('Error deleting counter:', error);

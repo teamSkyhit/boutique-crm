@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -46,7 +46,7 @@ export default function PrintBarcodesPage() {
     queryKey: ['products', { limit: 1000 }],
     queryFn: async () => {
       const response = await productsAPI.getAll(user.token, { limit: 1000 });
-      if (!response.success) throw new Error(response.message || 'Failed to load products');
+      if (!response.success) throw new Error(response.error || response.message || 'Failed to load products');
       return response.data;
     },
     enabled: !!user?.token,

@@ -7,7 +7,7 @@ import { PackageSearch, Loader2 } from 'lucide-react';
  * Combines stacked boxes + scanner beam to reinforce inventory/POS concept.
  */
 export default function Loader({
-  message = 'Syncing your inventory workspace...',
+  message = 'Loading...',
   size = 'lg',
 }) {
   const wrapperSize = size === 'sm' ? 'w-32 h-32' : 'w-48 h-48';
