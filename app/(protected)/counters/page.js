@@ -433,8 +433,8 @@ export default function CountersPage() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={usr.pin ? 'outline' : 'destructive'} className="text-xs">
-                            {usr.pin ? 'PIN Set' : 'No PIN'}
+                          <Badge variant={usr.hasPin ? 'outline' : 'destructive'} className="text-xs">
+                            {usr.hasPin ? 'PIN set' : 'No PIN'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
@@ -445,7 +445,7 @@ export default function CountersPage() {
                             onClick={() => handleOpenPinDialog(usr)}
                           >
                             <KeyRound className="h-3 w-3" />
-                            {usr.pin ? 'Change PIN' : 'Set PIN'}
+                            {usr.hasPin ? 'Change PIN' : 'Set PIN'}
                           </Button>
                         </TableCell>
                       </TableRow>
