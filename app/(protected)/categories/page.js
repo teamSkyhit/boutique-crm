@@ -559,6 +559,7 @@ export default function CategoriesPage() {
                   onChange={(url) => setCategoryFormData({ ...categoryFormData, image: url })}
                   label="Category Image (Optional)"
                   token={user?.token}
+                  folder="categories"
                 />
                 <div className="flex items-center justify-between rounded-lg border p-3">
                   <div className="flex items-center gap-2">
@@ -656,6 +657,7 @@ export default function CategoriesPage() {
                   onChange={(url) => setSubcategoryFormData({ ...subcategoryFormData, image: url })}
                   label="Subcategory Image (Optional)"
                   token={user?.token}
+                  folder="subcategories"
                 />
               </div>
               <DialogFooter>

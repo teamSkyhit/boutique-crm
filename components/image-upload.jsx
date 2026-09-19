@@ -8,7 +8,7 @@ import { Upload, X, Camera } from 'lucide-react';
 import { uploadAPI } from '@/lib/api';
 import { toast } from 'sonner';
 
-export default function ImageUpload({ value, onChange, label = 'Product Image', token }) {
+export default function ImageUpload({ value, onChange, label = 'Product Image', token, folder = 'products' }) {
   const [preview, setPreview] = useState(value || null);
   const [isUploading, setIsUploading] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
@@ -24,7 +24,7 @@ export default function ImageUpload({ value, onChange, label = 'Product Image', 
     }
     setIsUploading(true);
     try {
-      const result = await uploadAPI.uploadImage(file, token);
+      const result = await uploadAPI.uploadImage(file, token, folder);
       const url = result.data?.url;
       const key = result.data?.objectKey;
       setPreview(url);
