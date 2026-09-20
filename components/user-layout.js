@@ -86,7 +86,7 @@ export default function UserLayout({ children }) {
                 height={96}
                 className="w-[6rem] h-[6rem] object-contain"
               />
-              <span className="text-lg sm:text-3xl">Boutique</span>
+              <span className="text-lg sm:text-3xl">Naga&apos;s Boutique</span>
             </Link>
           </div>
 
