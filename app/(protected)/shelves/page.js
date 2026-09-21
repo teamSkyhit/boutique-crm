@@ -53,12 +53,12 @@ export default function ShelvesPage() {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [errors, setErrors] = useState({})
 
-  const { data: shelves = [], isLoading: loading } = useQuery({
+  const { data: shelves = [], isLoading: loading, error: queryError } = useQuery({
     queryKey: ['shelves'],
     queryFn: async () => {
       const response = await shelvesAPI.getAll(user.token)
       if (!response.success) throw new Error(response.error || response.message || 'Failed to fetch shelves')
-      return response.data || []
+      return response.data || response.shelves || []
     },
     enabled: !!user?.token,
   })
@@ -213,11 +213,11 @@ export default function ShelvesPage() {
     )
   }
 
-  if (error) {
+  if (queryError || error) {
     return (
       <ProtectedRoute allowedRoles={['admin', 'user']}>
           <div className="flex flex-col items-center justify-center h-64 space-y-4">
-            <p className="text-red-500 font-medium">{error}</p>
+            <p className="text-red-500 font-medium">{queryError?.message || error}</p>
             <Button variant="outline" onClick={refreshShelves}>
               <RefreshCw className="h-4 w-4 mr-2" />
               Retry

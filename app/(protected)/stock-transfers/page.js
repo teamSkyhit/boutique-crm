@@ -234,7 +234,7 @@ export default function StockTransfersPage() {
         toast.success(`Transfer ${actionMessages[action]}ed successfully`);
         qc.invalidateQueries({ queryKey: ['transfers'] });
       } else {
-        toast.error(response.message || `Failed to ${action} transfer`);
+        toast.error(response.error || response.message || `Failed to ${action} transfer`);
       }
     } catch (error) {
       console.error(`Error ${action}ing transfer:`, error);
@@ -255,11 +255,9 @@ export default function StockTransfersPage() {
     return <Badge className={colors}>{status.replace('_', ' ')}</Badge>;
   };
 
-  const canApprove = (transfer) => transfer.status === 'PENDING' && user?.role === 'ADMIN';
+  const canApprove = (transfer) => transfer.status === 'PENDING' && user?.role?.toLowerCase() === 'admin';
   const canShip = (transfer) =>
-    (transfer.status === 'PENDING' || transfer.status === 'IN_TRANSIT') &&
-    transfer.status !== 'RECEIVED' &&
-    transfer.status !== 'CANCELLED';
+    transfer.status === 'PENDING' || transfer.status === 'APPROVED';
   const canReceive = (transfer) => transfer.status === 'IN_TRANSIT';
   const canCancel = (transfer) =>
     transfer.status === 'PENDING' || transfer.status === 'IN_TRANSIT';

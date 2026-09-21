@@ -37,7 +37,7 @@ const nextConfig = {
           {
             key: "Content-Security-Policy",
             value:
-              "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://*.r2.cloudflarestorage.com; img-src 'self' data: blob: https://*.r2.cloudflarestorage.com https://*.cloudflare.com",
+              "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://*.r2.cloudflarestorage.com https://*.r2.dev; img-src 'self' data: blob: https://*.r2.cloudflarestorage.com https://*.r2.dev https://*.cloudflare.com https:",
           },
           // CORS Headers (only for development or if explicitly configured)
           ...(isDevelopment || process.env.CORS_ORIGINS
