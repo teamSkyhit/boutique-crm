@@ -154,7 +154,7 @@ export default function CategoriesPage() {
       const payload = {
         name: validatedData.name,
         description: validatedData.description || null,
-        hsnCode: validatedData.hsnCode || null,
+        hsnCode: validatedData.hsnCode || '',
         gstRate: validatedData.gstRate ?? 0,
         gstInclusive: validatedData.gstInclusive ?? true,
         showOnWebsite: validatedData.showOnWebsite ?? false,
