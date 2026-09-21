@@ -130,12 +130,15 @@ export default function CategoriesPage() {
     setIsCategoryDialogOpen(true);
   };
 
+  const extractErrorMsg = (err, fallback) =>
+    typeof err === 'string' ? err : err?.message || fallback;
+
   const handleSaveCategory = async () => {
     setCategoryErrors({});
-    
+
     try {
       const validationResult = categorySchema.safeParse(categoryFormData);
-      
+
       if (!validationResult.success) {
         const fieldErrors = getFieldErrors(validationResult.error);
         setCategoryErrors(fieldErrors);
@@ -148,15 +151,22 @@ export default function CategoriesPage() {
       const validatedData = validationResult.data;
       logger.info(editingCategory ? 'Updating category' : 'Creating category:', { name: validatedData.name });
 
+      const payload = {
+        name: validatedData.name,
+        description: validatedData.description || null,
+        hsnCode: validatedData.hsnCode || null,
+        gstRate: validatedData.gstRate ?? 0,
+        gstInclusive: validatedData.gstInclusive ?? true,
+        showOnWebsite: validatedData.showOnWebsite ?? false,
+        minStockLevel: validatedData.minStockLevel ?? 5,
+        image: validatedData.image || null,
+      };
+
       let response;
       if (editingCategory) {
-        response = await categoriesAPI.update(
-          editingCategory.id,
-          validatedData,
-          user?.token
-        );
+        response = await categoriesAPI.update(editingCategory.id, payload, user?.token);
       } else {
-        response = await categoriesAPI.create(validatedData, user?.token);
+        response = await categoriesAPI.create(payload, user?.token);
       }
 
       if (response.success) {
@@ -169,8 +179,8 @@ export default function CategoriesPage() {
         setIsCategoryDialogOpen(false);
         refreshCategories();
       } else {
-        logger.error('Category save failed:', response.message);
-        toast.error(response.error || response.message || 'Failed to save category');
+        logger.error('Category save failed:', response.error || response.message);
+        toast.error(extractErrorMsg(response.error, response.message) || 'Failed to save category');
       }
     } catch (error) {
       logger.error('Error saving category:', error);
@@ -265,8 +275,8 @@ export default function CategoriesPage() {
         setIsSubcategoryDialogOpen(false);
         refreshCategories();
       } else {
-        logger.error('Subcategory save failed:', response.message);
-        toast.error(response.error || response.message || 'Failed to save subcategory');
+        logger.error('Subcategory save failed:', response.error || response.message);
+        toast.error(extractErrorMsg(response.error, response.message) || 'Failed to save subcategory');
       }
     } catch (error) {
       logger.error('Error saving subcategory:', error);
@@ -508,24 +518,15 @@ export default function CategoriesPage() {
                   <Textarea
                     id="category-description"
                     value={categoryFormData.description}
-                    onChange={(e) =>
-                      setCategoryFormData({
-                        ...categoryFormData,
-                        description: e.target.value,
-                      })
-                    }
-                    className={categoryErrors.description ? 'border-destructive' : ''}
-                    placeholder="Optional description"
-                    rows={3}
                     onChange={(e) => {
-                      setCategoryFormData({
-                        ...categoryFormData,
-                        description: e.target.value,
-                      });
+                      setCategoryFormData({ ...categoryFormData, description: e.target.value });
                       if (categoryErrors.description) {
                         setCategoryErrors({ ...categoryErrors, description: null });
                       }
                     }}
+                    className={categoryErrors.description ? 'border-destructive' : ''}
+                    placeholder="Optional description"
+                    rows={3}
                   />
                   {categoryErrors.description && (
                     <p className="text-sm text-destructive">{categoryErrors.description}</p>
