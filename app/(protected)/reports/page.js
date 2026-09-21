@@ -21,6 +21,9 @@ export default function ReportsPage() {
   const { user } = useAuth()
   const { data: stores = [] } = useStores()
   const fetchDebounce = useRef(null)
+  // tracks which filter combination each tab was last successfully fetched with
+  // key: tab name, value: "startDate|endDate|storeId|counterId"
+  const fetchedKeys = useRef({})
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('sales')
 
@@ -65,6 +68,9 @@ export default function ReportsPage() {
     fetchCounters()
   }, [user?.token, selectedStore])
 
+  const getFilterKey = () =>
+    `${startDate}|${endDate}|${selectedStore}|${selectedCounter}`
+
   // Fetch report data
   const fetchReport = async (reportType) => {
     if (!user?.token) return
@@ -74,6 +80,7 @@ export default function ReportsPage() {
       return
     }
 
+    const filterKey = getFilterKey()
     setLoading(true)
     try {
       const params = {}
@@ -110,7 +117,9 @@ export default function ReportsPage() {
           break
       }
 
-      if (response && !response.success) {
+      if (response?.success) {
+        fetchedKeys.current[reportType] = filterKey
+      } else if (response) {
         toast.error(response.error || response.message || 'Failed to fetch report')
       }
     } catch (error) {
@@ -121,10 +130,14 @@ export default function ReportsPage() {
     }
   }
 
-  // Auto-fetch when tab changes or filters change — 400ms debounce to avoid
-  // firing on every keystroke when user is typing date values
+  // Auto-fetch when tab changes or filters change.
+  // Tab switches are skipped when the tab already has data for the current filters.
+  // Filter changes always re-fetch (different filterKey invalidates the cache).
+  // 400ms debounce avoids firing on every keystroke when user is typing date values.
   useEffect(() => {
     if (!activeTab || !user?.token) return
+    const filterKey = getFilterKey()
+    if (fetchedKeys.current[activeTab] === filterKey) return
     if (fetchDebounce.current) clearTimeout(fetchDebounce.current)
     fetchDebounce.current = setTimeout(() => {
       fetchReport(activeTab)
@@ -209,7 +222,13 @@ export default function ReportsPage() {
               </div>
             </div>
             <div className="flex gap-2 mt-4">
-              <Button onClick={() => fetchReport(activeTab)} disabled={loading}>
+              <Button
+                onClick={() => {
+                  delete fetchedKeys.current[activeTab]
+                  fetchReport(activeTab)
+                }}
+                disabled={loading}
+              >
                 <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
